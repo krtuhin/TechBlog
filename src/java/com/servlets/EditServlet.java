@@ -60,12 +60,20 @@ public class EditServlet extends HttpServlet {
 
             User user = (User) s.getAttribute("currentUser");
 
+            String oldFile = user.getProfile();
+
             user.setName(name);
             user.setEmail(email);
             user.setPassword(password);
             user.setAbout(about);
-            user.setProfile(imageName);
 
+            //if image not updated
+            if (imageName.isEmpty()) {
+                user.setProfile(oldFile);
+            } else {
+                user.setProfile(imageName);
+            }
+            
             UserDao userDao = new UserDao(ConnectionProvider.getConnection());
 
             boolean ans = userDao.updateUser(user);
@@ -76,7 +84,12 @@ public class EditServlet extends HttpServlet {
                     //save image to server
                     String path = request.getRealPath("/") + "images" + File.separator + "profile" + File.separator + user.getProfile();
 
-                    Helper.deleteFile(path);
+                    if (!oldFile.equals("default.png")) {
+
+                        String oldFilePath = request.getRealPath("/") + "images" + File.separator + "profile" + File.separator + oldFile;
+
+                        Helper.deleteFile(oldFilePath);
+                    }
 
                     if (Helper.saveFile(image.getInputStream(), path)) {
 

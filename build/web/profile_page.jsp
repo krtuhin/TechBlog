@@ -1,3 +1,7 @@
+<%@page import="com.entities.Category"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.dao.PostDao"%>
+<%@page import="com.helper.ConnectionProvider"%>
 <%@page import="com.entities.Message"%>
 <%@page import="com.entities.User"%>
 <%@page errorPage = "error_page.jsp" %>
@@ -55,6 +59,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#"> <span class="fa fa-id-badge"></span> Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#post-modal"> <span class=" fa fa-cloud-upload"></span> Create Post</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mr-right">
@@ -176,6 +183,69 @@
 
         <!--end profile modal-->
 
+        <!--add post modal-->
+
+        <!-- Modal -->
+        <div class="modal fade" id="post-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header primary-background text-white">
+                        <h5 class="modal-title" id="exampleModalLabel">Provide post details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <form action="AddPostServlet" method="post" id="post-form">
+
+                            <div class="form-group">
+                                <select class="form-control" name="cId">
+                                    <option selected disabled>---Select Category---</option>
+                                    <%
+                                        PostDao post = new PostDao(ConnectionProvider.getConnection());
+
+                                        ArrayList<Category> list = post.getAllCategory();
+
+                                        for (Category c : list) {
+                                    %>
+                                    <option value="<%= c.getCid()%>"><%= c.getCname()%></option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" name="title" placeholder="Enter post title" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <textarea class="form-control" name="content" placeholder="Add post content" rows="5"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <textarea class="form-control" name="code" placeholder="Add program(if any)" rows="4"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pic">Add picture</label>
+                                <input type="file" id="pic" name="image" class="form-control">
+                            </div>
+
+                            <div class="container text-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+                                <button type="submit" class="btn btn-primary">Post</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--end add post modal-->
+
 
 
 
@@ -210,6 +280,35 @@
 
                         editStatus = true;
                     }
+                });
+            });
+
+        </script>
+
+        <!--post form-->
+        <script>
+            $(document).ready(function (e) {
+                $("#post-form").on("submit", function (event) {
+                    //this code will execute when the form will submited
+                    event.preventDefault();
+
+                    let form = new FormData(this);
+
+                    //requesting servlet
+
+                    $.ajax({
+                        url: "AddPostServlet",
+                        type: 'POST',
+                        data: form,
+                        success: function (data, textStatus, jqXHR) {
+                            console.log(data);
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+
+                        },
+                        processData: false,
+                        contentType: false,
+                    });
                 });
             });
 
