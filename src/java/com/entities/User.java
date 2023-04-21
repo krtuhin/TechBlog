@@ -36,6 +36,12 @@ public class User {
         this.about = about;
     }
 
+    public User(String name, String profile) {
+        this.name = name;
+        this.profile = profile;
+    }
+    
+
 //    getter & setter
     public int getId() {
         return id;

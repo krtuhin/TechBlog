@@ -3,8 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/krtuh/Desktop/Technical_Blog/src/java/com/servlets/EditServlet.java</file>
-            <file>file:/C:/Users/krtuh/Desktop/Technical_Blog/src/java/com/servlets/AddPostServlet.java</file>
+            <file>file:/C:/Users/krtuh/Desktop/Technical_Blog/web/load_post.jsp</file>
+            <file>file:/C:/Users/krtuh/Desktop/Technical_Blog/web/post_detail.jsp</file>
             <file>file:/C:/Users/krtuh/Desktop/Technical_Blog/web/profile_page.jsp</file>
         </group>
     </open-files>

@@ -2,8 +2,10 @@ package com.dao;
 
 import com.entities.Category;
 import com.entities.Post;
+import com.entities.User;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PostDao {
 
@@ -62,5 +64,116 @@ public class PostDao {
             e.printStackTrace();
         }
         return f;
+    }
+
+    //get all the post
+    public List<Post> getAllPosts() {
+
+        List<Post> list = new ArrayList<>();
+
+        //fetch all the post
+        try {
+
+            PreparedStatement pstmt = con.prepareStatement("select * from posts order by pid desc");
+            ResultSet set = pstmt.executeQuery();
+
+            while (set.next()) {
+                int pId = set.getInt("pid");
+                String name = set.getString("ptitle");
+                String content = set.getString("pcontent");
+                String code = set.getString("pcode");
+                String image = set.getString("pimage");
+                Timestamp date = set.getTimestamp("pdate");
+                int catId = set.getInt("catid");
+                int userId = set.getInt("userid");
+
+                Post post = new Post(pId, name, content, code, image, date, catId, userId);
+                list.add(post);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public List<Post> getPostsByCatId(int cId) {
+        List<Post> list = new ArrayList<>();
+        //get posts by id
+
+        try {
+
+            PreparedStatement pstmt = con.prepareStatement("select * from posts where catid=? order by pid desc");
+            pstmt.setInt(1, cId);
+            ResultSet set = pstmt.executeQuery();
+
+            while (set.next()) {
+
+                int pId = set.getInt("pid");
+                String name = set.getString("ptitle");
+                String content = set.getString("pcontent");
+                String code = set.getString("pcode");
+                String image = set.getString("pimage");
+                Timestamp date = set.getTimestamp("pdate");
+                int userId = set.getInt("userid");
+
+                Post post = new Post(pId, name, content, code, image, date, cId, userId);
+                list.add(post);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    //get user name by id
+    public User getUserDetail(int userId) {
+        User user = null;
+
+        String query = "select name,profile from tuser where id=?";
+
+        try {
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, userId);
+
+            ResultSet set = pstmt.executeQuery();
+
+            if (set.next()) {
+                String name = set.getString("name");
+                String profile = set.getString("profile");
+
+                user = new User(name, profile);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+    
+    public Post getPostById(int postId){
+        Post post = null;
+        String q = "select * from posts where pid=?";
+        try {
+            PreparedStatement pstmt = con.prepareStatement(q);
+            pstmt.setInt(1, postId);
+            ResultSet set = pstmt.executeQuery();
+            if(set.next()){
+                String title = set.getString("ptitle");
+                String content = set.getString("pcontent");
+                String code = set.getString("pcode");
+                String image = set.getString("pimage");
+                Timestamp date = set.getTimestamp("pdate");
+                int catId = set.getInt("catid");
+                int userId = set.getInt("userid");
+                
+                post = new Post(title, content, code, image, date, catId, userId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return post;
     }
 }

@@ -1,6 +1,6 @@
 package com.entities;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 public class Post {
 
@@ -13,15 +13,26 @@ public class Post {
     private int catId;
     private int userId;
 
-    public Post(int pid, String pTitle, String pContent, String pCode, String pImage, int catId, int userId) {
+    public Post(int pid, String pTitle, String pContent, String pCode, String pImage, Timestamp pDate, int catId, int userId) {
         this.pid = pid;
         this.pTitle = pTitle;
         this.pContent = pContent;
         this.pCode = pCode;
         this.pImage = pImage;
-//        this.pDate = pDate;
+        this.pDate = pDate;
         this.catId = catId;
         this.userId = userId;
+    }
+
+    public Post(String pTitle, String pContent, String pCode, String pImage, Timestamp pDate, int catId, int userId) {
+        this.pTitle = pTitle;
+        this.pContent = pContent;
+        this.pCode = pCode;
+        this.pImage = pImage;
+        this.pDate = pDate;
+        this.catId = catId;
+        this.userId = userId;
+
     }
 
     public Post(String pTitle, String pContent, String pCode, String pImage, int catId, int userId) {
@@ -29,10 +40,8 @@ public class Post {
         this.pContent = pContent;
         this.pCode = pCode;
         this.pImage = pImage;
-//        this.pDate = pDate;
         this.catId = catId;
         this.userId = userId;
-
     }
 
     public Post() {

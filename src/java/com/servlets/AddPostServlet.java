@@ -45,6 +45,10 @@ public class AddPostServlet extends HttpServlet {
             Part part = request.getPart("image");
             String img = part.getSubmittedFileName();
 
+            if (img.isEmpty()) {
+                img = "default.png";
+            }
+            
             //getting current user id
             HttpSession s = request.getSession();
 
@@ -57,11 +61,10 @@ public class AddPostServlet extends HttpServlet {
             boolean ans = post.savePost(p);
 
             if (ans) {
-                out.print("done");
 
                 String path = request.getRealPath("/") + "images" + File.separator + "post" + File.separator + img;
                 if (Helper.saveFile(part.getInputStream(), path)) {
-                    out.println("photo saved");
+                    out.print("done");
                 }
             } else {
                 out.println("error");

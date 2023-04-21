@@ -1,16 +1,23 @@
-<%@page import="com.entities.Category"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.dao.PostDao"%>
-<%@page import="com.helper.ConnectionProvider"%>
+
 <%@page import="com.entities.Message"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.entities.Category"%>
+<%@page import="com.entities.Post"%>
+<%@page import="com.helper.ConnectionProvider"%>
+<%@page import="com.dao.PostDao"%>
 <%@page import="com.entities.User"%>
-<%@page errorPage = "error_page.jsp" %>
+<%@page errorPage="error_page.jsp" %>
 <%
     User user = (User) session.getAttribute("currentUser");
-
     if (user == null) {
         response.sendRedirect("login_page.jsp");
     }
+%>
+
+<%
+    int postId = Integer.parseInt(request.getParameter("id"));
+    PostDao d = new PostDao(ConnectionProvider.getConnection());
+    Post p = d.getPostById(postId);
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -26,12 +33,37 @@
     .banner-background{
         clip-path: polygon(30% 0%, 70% 0%, 100% 0, 100% 89%, 63% 97%, 24% 90%, 0 98%, 0 0);
     }
+    .post-title{
+        font-weight: 250;
+        font-size: 30;
+    }
+    .post-content{
+        font-weight: 150;
+        font-size: 24;
+    }
+    .post-date{
+        font-style: italic;
+        font-weight: 500;
+
+    }
+    .post-user{
+        text-decoration: none;
+        font-size: 20;
+        font-weight: 450;
+    }
+    .row-user{
+        border: 1px solid #e2e2e2;
+        padding-top: 15px;
+    }
+/*    .post-user::hover{
+        text-decoration: none;
+    }*/
 </style>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Profile Page</title>
+        <title><%= p.getpTitle()%></title>
     </head>
     <body>
         <!--start navbar-->
@@ -93,39 +125,39 @@
 
         <main>
             <div class="container">
-                <div class="row mt-4">
-
-                    <!--first col-->
-                    <div class="col-md-4">
-                        <!--categories-->
-                        <div class="list-group">
-                            <a href="#" onclick="getPosts(0,this)" class="c-link list-group-item list-group-item-action active">
-                                All Posts
-                            </a>
-                            <%
-                                PostDao p = new PostDao(ConnectionProvider.getConnection());
-                                ArrayList<Category> list1 = p.getAllCategory();
-                                for (Category cc : list1) {
-                            %>
-                            <a href="#" onclick="getPosts(<%= cc.getCid()%>,this)" class="c-link list-group-item list-group-item-action"><%= cc.getCname()%></a>
-
-                            <%
-                                }
-                            %>
+                <div class="row my-4">
+                    <div class="col-md-8 offset-md-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <%
+                                    User u = d.getUserDetail(p.getUserId());
+                                %>
+                                <h3 class="post-title"><%= p.getpTitle()%></h3>
+                            </div>
+                            <div class="card-body">
+                                <img class="card-img-top my-2" src="images/post/<%= p.getpImage()%>" alt="Image">
+                                <!--name print-->
+                                <div class="row row-user">
+                                    <div class="col-md-8">
+                                        <p class="post-user"><a href="#"><%= u.getName()%></a> has posted:</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p class='post-date'><%= p.getpDate().toLocaleString()%></p>
+                                    </div>
+                                </div>
+                                <h6 class="post-content"><%= p.getpContent()%></h6>
+                                <br>
+                                <div class="post-code">
+                                    <pre><%= p.getpCode()%></pre>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-thumbs-o-up"></i> <span>10</span></a>
+                                <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-commenting-o"></i> <span>50</span></a>
+                            </div>
                         </div>
                     </div>
 
-                    <!--second col-->
-                    <div class="col-md-8">
-                        <!--posts-->
-                        <div class="container text-center" id="loader">
-                            <i class="fa fa-refresh fa-4x fa-spin"></i>
-                            <h3 class="mt-2">Loading...</h3>
-                        </div>
-
-                        <div class="container-fluid" id="all-post"></div>
-
-                    </div>
                 </div>
             </div>
         </main>
@@ -171,7 +203,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">Registered on: </th>
-                                            <td><%= user.getDateTime().toString()%></td>
+                                            <td><%= user.getDateTime().toLocaleString()%></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -304,25 +336,25 @@
 
         <script>
 
-                                $(document).ready(function () {
-                                    let editStatus = true;
-                                    $("#edit-btn").click(function () {
+            $(document).ready(function () {
+                let editStatus = true;
+                $("#edit-btn").click(function () {
 
-                                        if (editStatus) {
+                    if (editStatus) {
 
-                                            $("#profile-detail").hide();
-                                            $("#profile-edit").show();
-                                            $("#edt").text("Back");
-                                            editStatus = false;
-                                        } else {
+                        $("#profile-detail").hide();
+                        $("#profile-edit").show();
+                        $("#edt").text("Back");
+                        editStatus = false;
+                    } else {
 
-                                            $("#profile-detail").show();
-                                            $("#profile-edit").hide();
-                                            $("#edt").text("Edit");
-                                            editStatus = true;
-                                        }
-                                    });
-                                });
+                        $("#profile-detail").show();
+                        $("#profile-edit").hide();
+                        $("#edt").text("Edit");
+                        editStatus = true;
+                    }
+                });
+            });
         </script>
 
         <!--post form-->
@@ -357,36 +389,6 @@
                     });
                 });
             });
-        </script>
-
-
-        <!--loading posts using ajax-->
-        <script>
-
-            function getPosts(catId,link) {
-                $("#loader").show();
-                $("#all-post").hide();
-                $(".c-link").removeClass("active");
-
-                $.ajax({
-                    url: "load_post.jsp",
-                    data: {cid: catId},
-                    success: function (data, textStatus, jqXHR) {
-                        console.log(data);
-                        $("#loader").hide();
-                        $("#all-post").show();
-                        $("#all-post").html(data);
-                        $(link).addClass("active");
-                    },
-                });
-            }
-
-            $(document).ready(function (e) {
-                
-                let all = $(".c-link")[0];
-                getPosts(0,all);
-            });
-
         </script>
     </body>
 </html>

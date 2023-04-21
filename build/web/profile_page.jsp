@@ -44,7 +44,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="index.jsp"> <span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="profile_page.jsp"> <span class="fa fa-home"></span> Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -88,6 +88,51 @@
                 session.removeAttribute("msg");
             }
         %>
+
+        <!--main body of the page-->
+
+        <main>
+            <div class="container">
+                <div class="row mt-4">
+
+                    <!--first col-->
+                    <div class="col-md-4">
+                        <!--categories-->
+                        <div class="list-group">
+                            <a href="#" onclick="getPosts(0,this)" class="c-link list-group-item list-group-item-action active">
+                                All Posts
+                            </a>
+                            <%
+                                PostDao p = new PostDao(ConnectionProvider.getConnection());
+                                ArrayList<Category> list1 = p.getAllCategory();
+                                for (Category cc : list1) {
+                            %>
+                            <a href="#" onclick="getPosts(<%= cc.getCid()%>,this)" class="c-link list-group-item list-group-item-action"><%= cc.getCname()%></a>
+
+                            <%
+                                }
+                            %>
+                        </div>
+                    </div>
+
+                    <!--second col-->
+                    <div class="col-md-8">
+                        <!--posts-->
+                        <div class="container text-center" id="loader">
+                            <i class="fa fa-refresh fa-4x fa-spin"></i>
+                            <h3 class="mt-2">Loading...</h3>
+                        </div>
+
+                        <div class="container-fluid" id="all-post"></div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+
+
+
+        <!--end main body of the page-->
 
         <!--start profile modal-->
 
@@ -254,35 +299,30 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script src="js/script.js" type="text/javascript"></script>
 
         <script>
 
-            $(document).ready(function () {
-                let editStatus = true;
+                                $(document).ready(function () {
+                                    let editStatus = true;
+                                    $("#edit-btn").click(function () {
 
-                $("#edit-btn").click(function () {
+                                        if (editStatus) {
 
-                    if (editStatus) {
+                                            $("#profile-detail").hide();
+                                            $("#profile-edit").show();
+                                            $("#edt").text("Back");
+                                            editStatus = false;
+                                        } else {
 
-                        $("#profile-detail").hide();
-                        $("#profile-edit").show();
-
-                        $("#edt").text("Back");
-
-                        editStatus = false;
-                    } else {
-
-                        $("#profile-detail").show();
-                        $("#profile-edit").hide();
-
-                        $("#edt").text("Edit");
-
-                        editStatus = true;
-                    }
-                });
-            });
-
+                                            $("#profile-detail").show();
+                                            $("#profile-edit").hide();
+                                            $("#edt").text("Edit");
+                                            editStatus = true;
+                                        }
+                                    });
+                                });
         </script>
 
         <!--post form-->
@@ -291,9 +331,7 @@
                 $("#post-form").on("submit", function (event) {
                     //this code will execute when the form will submited
                     event.preventDefault();
-
                     let form = new FormData(this);
-
                     //requesting servlet
 
                     $.ajax({
@@ -302,6 +340,14 @@
                         data: form,
                         success: function (data, textStatus, jqXHR) {
                             console.log(data);
+                            if (data === "done") {
+                                swal("Congratulations", "Your content posted successfully..!", "success")
+                                        .then((value) => {
+                                            window.location = "profile_page.jsp";
+                                        });
+                            } else {
+                                swal("Error!!", "Something went wrong! Please try again..!", "warning");
+                            }
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
 
@@ -310,6 +356,35 @@
                         contentType: false,
                     });
                 });
+            });
+        </script>
+
+
+        <!--loading posts using ajax-->
+        <script>
+
+            function getPosts(catId,link) {
+                $("#loader").show();
+                $("#all-post").hide();
+                $(".c-link").removeClass("active");
+
+                $.ajax({
+                    url: "load_post.jsp",
+                    data: {cid: catId},
+                    success: function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        $("#loader").hide();
+                        $("#all-post").show();
+                        $("#all-post").html(data);
+                        $(link).addClass("active");
+                    },
+                });
+            }
+
+            $(document).ready(function (e) {
+                
+                let all = $(".c-link")[0];
+                getPosts(0,all);
             });
 
         </script>
