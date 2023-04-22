@@ -1,4 +1,6 @@
 
+<%@page import="com.dao.LikeDao"%>
+<%@page import="java.text.DateFormat"%>
 <%@page import="com.entities.Message"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.entities.Category"%>
@@ -55,9 +57,15 @@
         border: 1px solid #e2e2e2;
         padding-top: 15px;
     }
-/*    .post-user::hover{
-        text-decoration: none;
-    }*/
+
+    body{
+        background-image: url(images/bg.png);
+        background-attachment: fixed;
+        background-size: cover;
+    }
+    /*    .post-user::hover{
+            text-decoration: none;
+        }*/
 </style>
 <!DOCTYPE html>
 <html>
@@ -142,18 +150,27 @@
                                         <p class="post-user"><a href="#"><%= u.getName()%></a> has posted:</p>
                                     </div>
                                     <div class="col-md-4">
-                                        <p class='post-date'><%= p.getpDate().toLocaleString()%></p>
+                                        <p class='post-date'><%= DateFormat.getDateTimeInstance().format(p.getpDate())%></p>
                                     </div>
                                 </div>
                                 <h6 class="post-content"><%= p.getpContent()%></h6>
                                 <br>
                                 <div class="post-code">
+                                    <%
+                                        if (p.getpCode() != null) {
+                                    %>
                                     <pre><%= p.getpCode()%></pre>
+                                    <%
+                                        }
+                                    %>
                                 </div>
                             </div>
                             <div class="card-footer">
-                                <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-thumbs-o-up"></i> <span>10</span></a>
-                                <a href="#" class="btn btn-outline-primary btn-sm"><i class="fa fa-commenting-o"></i> <span>50</span></a>
+                                <%
+                                LikeDao ld = new LikeDao(ConnectionProvider.getConnection());
+                                %>
+                                <a href="#" onclick="doLike(<%= postId %>, <%= user.getId() %>)" class="btn btn-outline-primary btn-sm"><i class="fa fa-thumbs-o-up"></i> <span class="like-count"><%= ld.countLikeOnPost(postId) %></span></a>
+                                <a href="#" onclick="" class="btn btn-outline-primary btn-sm"><i class="fa fa-commenting-o"></i> <span>50</span></a>
                             </div>
                         </div>
                     </div>
@@ -336,25 +353,25 @@
 
         <script>
 
-            $(document).ready(function () {
-                let editStatus = true;
-                $("#edit-btn").click(function () {
+                                    $(document).ready(function () {
+                                        let editStatus = true;
+                                        $("#edit-btn").click(function () {
 
-                    if (editStatus) {
+                                            if (editStatus) {
 
-                        $("#profile-detail").hide();
-                        $("#profile-edit").show();
-                        $("#edt").text("Back");
-                        editStatus = false;
-                    } else {
+                                                $("#profile-detail").hide();
+                                                $("#profile-edit").show();
+                                                $("#edt").text("Back");
+                                                editStatus = false;
+                                            } else {
 
-                        $("#profile-detail").show();
-                        $("#profile-edit").hide();
-                        $("#edt").text("Edit");
-                        editStatus = true;
-                    }
-                });
-            });
+                                                $("#profile-detail").show();
+                                                $("#profile-edit").hide();
+                                                $("#edt").text("Edit");
+                                                editStatus = true;
+                                            }
+                                        });
+                                    });
         </script>
 
         <!--post form-->

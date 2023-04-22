@@ -1,3 +1,4 @@
+<%@page import="com.dao.LikeDao"%>
 <%@page import="com.entities.User"%>
 <%@page import="java.util.List"%>
 <%@page import="com.entities.Post"%>
@@ -43,8 +44,12 @@
                 </div>
             </div>
             <div class="card-footer">
+                <%
+                User user = (User)session.getAttribute("currentUser");
+                LikeDao like = new LikeDao(ConnectionProvider.getConnection());
+                %>
                 <a href="post_detail.jsp?id=<%= post.getPid() %>" class="btn btn-primary btn-sm">Read More</a>
-                <a href="#" class="btn btn-outline-primary btn-sm mr-right"><i class="fa fa-thumbs-o-up"></i> <span>10</span></a>
+                <a href="#" onclick="doLike(<%= post.getPid() %>,<%= user.getId() %>)" class="btn btn-outline-primary btn-sm mr-right"><i class="fa fa-thumbs-o-up"></i> <span class="like-count"><%= like.countLikeOnPost(post.getPid()) %></span></a>
                 <a href="#" class="btn btn-outline-primary btn-sm mr-right"><i class="fa fa-commenting-o"></i> <span>30</span></a>
             </div>
         </div>

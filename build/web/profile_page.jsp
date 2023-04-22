@@ -26,6 +26,11 @@
     .banner-background{
         clip-path: polygon(30% 0%, 70% 0%, 100% 0, 100% 89%, 63% 97%, 24% 90%, 0 98%, 0 0);
     }
+    body{
+        background-image: url(images/bg.png);
+        background-attachment: fixed;
+        background-size: cover;
+    }
 </style>
 <!DOCTYPE html>
 <html>
@@ -119,7 +124,7 @@
                     <div class="col-md-8">
                         <!--posts-->
                         <div class="container text-center" id="loader">
-                            <i class="fa fa-refresh fa-4x fa-spin"></i>
+                            <i class="fa fa-refresh fa-4x fa-spin text-white"></i>
                             <h3 class="mt-2">Loading...</h3>
                         </div>
 
