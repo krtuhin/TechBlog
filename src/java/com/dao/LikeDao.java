@@ -58,8 +58,8 @@ public class LikeDao {
         }
         return f;
     }
-    
-    public boolean deleteLike(int pId, int uId){
+
+    public boolean deleteLike(int pId, int uId) {
         boolean f = false;
         try {
             PreparedStatement pstmt = this.con.prepareStatement("delete from likes where pid=? and userid=?");

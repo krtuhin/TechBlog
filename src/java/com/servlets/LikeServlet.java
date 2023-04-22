@@ -33,13 +33,13 @@ public class LikeServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-           
+
             String operation = request.getParameter("operation");
             int uId = Integer.parseInt(request.getParameter("uid"));
             int pId = Integer.parseInt(request.getParameter("pid"));
-            
+
             LikeDao like = new LikeDao(ConnectionProvider.getConnection());
-            
+
             if (operation.trim().equalsIgnoreCase("like")) {
                 boolean f = like.doLike(pId, uId);
                 out.println(f);

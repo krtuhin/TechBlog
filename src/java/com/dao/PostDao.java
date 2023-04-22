@@ -152,15 +152,15 @@ public class PostDao {
         }
         return user;
     }
-    
-    public Post getPostById(int postId){
+
+    public Post getPostById(int postId) {
         Post post = null;
         String q = "select * from posts where pid=?";
         try {
             PreparedStatement pstmt = con.prepareStatement(q);
             pstmt.setInt(1, postId);
             ResultSet set = pstmt.executeQuery();
-            if(set.next()){
+            if (set.next()) {
                 String title = set.getString("ptitle");
                 String content = set.getString("pcontent");
                 String code = set.getString("pcode");
@@ -168,7 +168,7 @@ public class PostDao {
                 Timestamp date = set.getTimestamp("pdate");
                 int catId = set.getInt("catid");
                 int userId = set.getInt("userid");
-                
+
                 post = new Post(title, content, code, image, date, catId, userId);
             }
         } catch (Exception e) {

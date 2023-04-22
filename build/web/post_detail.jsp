@@ -169,7 +169,7 @@
                                 <%
                                 LikeDao ld = new LikeDao(ConnectionProvider.getConnection());
                                 %>
-                                <a href="#" onclick="doLike(<%= postId %>, <%= user.getId() %>)" class="btn btn-outline-primary btn-sm"><i class="fa fa-thumbs-o-up"></i> <span class="like-count"><%= ld.countLikeOnPost(postId) %></span></a>
+                                <a href="#" onclick="doLike(<%= postId %>, <%= user.getId() %>)" class="btn btn-outline-primary btn-sm"><i class="fa fa-thumbs-o-up"></i> <span class="like-countV"><%= ld.countLikeOnPost(postId) %></span></a>
                                 <a href="#" onclick="" class="btn btn-outline-primary btn-sm"><i class="fa fa-commenting-o"></i> <span>50</span></a>
                             </div>
                         </div>
